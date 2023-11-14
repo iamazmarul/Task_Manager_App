@@ -9,7 +9,7 @@ class TaskManager extends StatelessWidget {
     return MaterialApp(
       title: "Task Manager",
       debugShowCheckedModeBanner: false,
-      home: const splashScreen(),
+      home: const SplashScreen(),
       theme: ThemeData(
         inputDecorationTheme: const InputDecorationTheme(
           fillColor: Colors.white,

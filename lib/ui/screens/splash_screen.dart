@@ -3,14 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 
-class splashScreen extends StatefulWidget {
-  const splashScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<splashScreen> createState() => _splashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _splashScreenState extends State<splashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
@@ -20,7 +20,7 @@ class _splashScreenState extends State<splashScreen> {
 
   void goToLogin() {
     Future.delayed(const Duration(seconds: 3)).then((value) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => loginScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
     });
   }
 

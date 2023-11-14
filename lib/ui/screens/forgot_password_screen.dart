@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/forgot_password_screen.dart';
+import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
-import 'package:task_manager/ui/screens/sign_up_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 80.0,
                     ),
                     Text(
-                      "Get Started With",
+                      "Your Email Address",
                       style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const Text(
+                      "A 6 digit verification pin will send to your \n email address",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
                     ),
                     const SizedBox(
                       height: 24,
@@ -38,50 +44,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: const InputDecoration(hintText: "Email"),
                     ),
                     const SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: "Password"),
-                    ),
-                    const SizedBox(
                       height: 16.0,
                     ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PinVerificationScreen(),
+                            ),
+                          );
+                        },
                         child: const Icon(Icons.arrow_circle_right_outlined),
                       ),
                     ),
                     const SizedBox(
                       height: 48.0,
                     ),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgotPasswordScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Forgot Password",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          "Don't Have an Account?",
+                          "Have Account?",
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -89,14 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignUpScreen()));
+                            Navigator.pop(context);
                           },
                           child: const Text(
-                            "Sign Up",
+                            "Sign In",
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.green,
