@@ -37,9 +37,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       const SizedBox(
                         height: 8,
                       ),
-                      TextFormField(
-                        decoration: const InputDecoration(hintText: "Photos"),
-                      ),
+                      PhotoPicker(),
                       const SizedBox(
                         height: 8,
                       ),
@@ -51,13 +49,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         height: 8,
                       ),
                       TextFormField(
-                        decoration: const InputDecoration(hintText: "First Name"),
+                        decoration:
+                            const InputDecoration(hintText: "First Name"),
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       TextFormField(
-                        decoration: const InputDecoration(hintText: "Last Name"),
+                        decoration:
+                            const InputDecoration(hintText: "Last Name"),
                       ),
                       const SizedBox(
                         height: 8,
@@ -92,5 +92,48 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ],
       ),
     ));
+  }
+
+  Container PhotoPicker() {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                "Photo",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Container(
+                child: Text("empty"),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
