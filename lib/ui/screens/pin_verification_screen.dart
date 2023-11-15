@@ -15,7 +15,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: bodyBackground(
+      body: BodyBackground(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24.0),

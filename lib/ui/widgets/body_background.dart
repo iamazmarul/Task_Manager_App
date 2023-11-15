@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class bodyBackground extends StatelessWidget {
-  const bodyBackground({super.key, required this.child});
+class BodyBackground extends StatelessWidget {
+  const BodyBackground({super.key, required this.child});
 
   final Widget child;
 

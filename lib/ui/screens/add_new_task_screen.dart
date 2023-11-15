@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/widgets/profile_summary_card.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
@@ -16,47 +17,49 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         child: Column(
           children: [
             const ProfileSummaryCard(),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Expanded(
+            Expanded(
+                child: BodyBackground(
                   child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   const SizedBox(
-                    height: 32.0,
+                      height: 32.0,
                   ),
                   Text(
-                    "Add New Task",
-                    style: Theme.of(context).textTheme.titleLarge,
+                      "Add New Task",
+                      style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
-                    height: 8,
+                      height: 8,
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(hintText: "Subject"),
+                      decoration: const InputDecoration(hintText: "Subject"),
                   ),
                   const SizedBox(
-                    height: 8,
+                      height: 8,
                   ),
                   TextFormField(
-                    maxLines: 5,
-                    decoration: const InputDecoration(hintText: "Description"),
+                      maxLines: 5,
+                      decoration: const InputDecoration(hintText: "Description"),
                   ),
                   const SizedBox(
-                    height: 16.0,
+                      height: 16.0,
                   ),
                   SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Icon(Icons.arrow_circle_right_outlined),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      ),
+                  ),
+              ],
+            ),
                     ),
                   ),
-                ],
-              ),
-                  )),
-            )
+                ))
           ],
         ),
       ),

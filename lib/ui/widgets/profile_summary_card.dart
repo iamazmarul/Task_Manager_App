@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
 class ProfileSummaryCard extends StatelessWidget {
   const ProfileSummaryCard({
-    super.key,
+    super.key, this.enableOnTab = true,
   });
+final bool enableOnTab;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: (){
+        if(enableOnTab)
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdateProfileScreen()));
+      },
       leading: const CircleAvatar(
         child: Icon(Icons.person),
       ),
@@ -26,9 +32,7 @@ class ProfileSummaryCard extends StatelessWidget {
         ),
       ),
       trailing: IconButton(
-        onPressed: () {
-
-        },
+        onPressed: () {},
         icon: const Icon(Icons.logout_outlined),
       ),
       tileColor: Colors.green,
