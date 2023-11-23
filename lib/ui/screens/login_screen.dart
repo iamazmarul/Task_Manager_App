@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/user_model.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/data/network_caller/network_response.dart';
+import 'package:task_manager/data/utility/urls.dart';
+import 'package:task_manager/ui/controllers/authentication_controller.dart';
 import 'package:task_manager/ui/screens/forgot_password_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
+import 'package:task_manager/ui/widgets/show_snack_message.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +18,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _loginInProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Form(
+              key: _formKey,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,30 +47,42 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 24,
                     ),
                     TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(hintText: "Email"),
-                    ),
+                        controller: _emailTEController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(hintText: "Email"),
+                        validator: (String? value) {
+                          if (value?.trim().isEmpty ?? true) {
+                            return "Enter your Valid Email Address";
+                          }
+                          return null;
+                        }),
                     const SizedBox(
                       height: 8,
                     ),
                     TextFormField(
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: "Password"),
-                    ),
+                        controller: _passwordTEController,
+                        obscureText: true,
+                        decoration: const InputDecoration(hintText: "Password"),
+                        validator: (String? value) {
+                          if (value?.trim().isEmpty ?? true) {
+                            return "Enter your Valid Password";
+                          }
+                          return null;
+                        }),
                     const SizedBox(
                       height: 16.0,
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                  const MainBottomNavbarScreen()));
-                        },
-                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      child: Visibility(
+                        visible: _loginInProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: userLogin,
+                          child: const Icon(Icons.arrow_circle_right_outlined),
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -120,5 +144,51 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> userLogin() async {
+    if (_formKey.currentState!.validate()) {
+      _loginInProgress = true;
+      if (mounted) {
+        setState(() {});
+      }
+      NetworkResponse response =
+          await NetworkCaller().postRequest(Urls.login, body: {
+        "email": _emailTEController.text.trim(),
+        "password": _passwordTEController.text,
+      });
+      _loginInProgress = false;
+      if (mounted) {
+        setState(() {});
+      }
+
+      if (response.isSuccess)  {
+        await AuthenticationController.saveUserInfo(response.jsonResponse["token"],
+            UserModel.fromJson(response.jsonResponse["data"]));
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MainBottomNavbarScreen()));
+        }
+      } else {
+        if (response.statusCode == 401) {
+          if (mounted) {
+            showSnackMessage(context, "Please Check Email or Password");
+          }
+        } else {
+          if (mounted) {
+            showSnackMessage(context, "Login Failed try again");
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
   }
 }
