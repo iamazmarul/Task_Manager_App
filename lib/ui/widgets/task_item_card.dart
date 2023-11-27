@@ -8,6 +8,20 @@ class ItemTaskCard extends StatelessWidget {
   });
 
   final Task task;
+  Color getStatusColor() {
+    switch (task.status) {
+      case 'New':
+        return Colors.blue;
+      case 'Progress':
+        return Colors.purple;
+      case 'Completed':
+        return Colors.green;
+      case 'Cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +61,8 @@ class ItemTaskCard extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: getStatusColor(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                 ),
                 Wrap(
                   children: [
