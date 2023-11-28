@@ -123,7 +123,7 @@ class _ItemTaskCardState extends State<ItemTaskCard> {
   void showUpdateStatusModel() {
     List<ListTile> items = TaskStatus.values
         .map((e) => ListTile(
-              title: Text("${e.name}"),
+              title: Text(e.name),
               onTap: () {
                 updateTaskStatus(e.name);
                 Navigator.pop(context);
