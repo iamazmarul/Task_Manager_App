@@ -23,82 +23,82 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const ProfileSummaryCard(),
-            Expanded(
-                child: BodyBackground(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Form(
-                    key: _formkey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 32.0,
-                        ),
-                        Text(
-                          "Add New Task",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        TextFormField(
-                            controller: _subjectTEController,
-                            decoration:
-                                const InputDecoration(hintText: "Subject"),
-                            validator: (String? value) {
-                              if (value?.trim().isEmpty ?? true) {
-                                return "Enter your Subject";
-                              }
-                              return null;
-                            }),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        TextFormField(
-                            controller: _descriptionTEController,
-                            maxLines: 5,
-                            decoration:
-                                const InputDecoration(hintText: "Description"),
-                            validator: (String? value) {
-                              if (value?.trim().isEmpty ?? true) {
-                                return "Enter your Description";
-                              }
-                              return null;
-                            }),
-                        const SizedBox(
-                          height: 16.0,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Visibility(
-                            visible: _createTaskinprogress == false,
-                            replacement: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                createNewTask();
-                              },
-                              child:
-                                  const Icon(Icons.arrow_circle_right_outlined),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const ProfileSummaryCard(),
+              Expanded(
+                  child: BodyBackground(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Form(
+                      key: _formkey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 32.0,
+                          ),
+                          Text(
+                            "Add New Task",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          TextFormField(
+                              controller: _subjectTEController,
+                              decoration:
+                                  const InputDecoration(hintText: "Subject"),
+                              validator: (String? value) {
+                                if (value?.trim().isEmpty ?? true) {
+                                  return "Enter your Subject";
+                                }
+                                return null;
+                              }),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          TextFormField(
+                              controller: _descriptionTEController,
+                              maxLines: 5,
+                              decoration:
+                                  const InputDecoration(hintText: "Description"),
+                              validator: (String? value) {
+                                if (value?.trim().isEmpty ?? true) {
+                                  return "Enter your Description";
+                                }
+                                return null;
+                              }),
+                          const SizedBox(
+                            height: 16.0,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Visibility(
+                              visible: _createTaskinprogress == false,
+                              replacement: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  createNewTask();
+                                },
+                                child:
+                                    const Icon(Icons.arrow_circle_right_outlined),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ))
-          ],
+              ))
+            ],
+          ),
         ),
-      ),
     );
   }
 

@@ -1,4 +1,4 @@
-class Urls{
+class Urls {
   static const String _baseUrl = "https://task.teamrabbil.com/api/v1";
   static const String registration = "$_baseUrl/registration";
   static const String login = "$_baseUrl/login";
@@ -8,4 +8,7 @@ class Urls{
   static const String getInProgressTask = "$_baseUrl/listTaskByStatus/Progress";
   static const String getCompletedTask = "$_baseUrl/listTaskByStatus/Completed";
   static const String getCancelledTask = "$_baseUrl/listTaskByStatus/Cancelled";
+  static String getUpdateTaskStatus(String taskId, String status) =>
+      "$_baseUrl/updateTaskStatus/$taskId/$status";
+  static String getDeleteTask(String taskId) => "$_baseUrl/deleteTask/$taskId/";
 }

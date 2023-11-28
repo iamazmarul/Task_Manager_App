@@ -53,17 +53,29 @@ class _TaskCompletedScreenState extends State<TaskCompletedScreen> {
               child: Visibility(
                 visible: getCompletedTaskInProgress == false,
                 replacement: const Center(child: CircularProgressIndicator()),
-                child: ListView.builder(
-                  itemCount: taskListModel.taskList?.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ItemTaskCard(
-                        task: taskListModel.taskList![index],
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    getCompletedTaskList();
                   },
+                  child: ListView.builder(
+                    itemCount: taskListModel.taskList?.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ItemTaskCard(
+                          task: taskListModel.taskList![index],
+                          onStatusChange: (){getCompletedTaskList();},
+                          showProgress: (inProgress){
+                            getCompletedTaskInProgress = inProgress;
+                            if(mounted){
+                              setState(() {});
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

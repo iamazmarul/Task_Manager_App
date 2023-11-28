@@ -51,17 +51,29 @@ class _TaskInprogressScreenState extends State<TaskInprogressScreen> {
               child: Visibility(
                 visible: getInprogressTaskInProgress == false,
                 replacement: const Center(child: CircularProgressIndicator()),
-                child: ListView.builder(
-                  itemCount: taskListModel.taskList?.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ItemTaskCard(
-                        task: taskListModel.taskList![index],
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    getInProgressTaskList();
                   },
+                  child: ListView.builder(
+                    itemCount: taskListModel.taskList?.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ItemTaskCard(
+                          task: taskListModel.taskList![index],
+                          onStatusChange: (){getInProgressTaskList();},
+                          showProgress: (inProgress){
+                            getInprogressTaskInProgress = inProgress;
+                            if(mounted){
+                              setState(() {});
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

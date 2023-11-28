@@ -106,17 +106,31 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               child: Visibility(
                 visible: getNewTaskInProgress == false,
                 replacement: const Center(child: CircularProgressIndicator()),
-                child: ListView.builder(
-                  itemCount: taskListModel.taskList?.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ItemTaskCard(
-                        task: taskListModel.taskList![index],
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: ()async {
+                    getNewTaskList();
                   },
+                  child: ListView.builder(
+                    itemCount: taskListModel.taskList?.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ItemTaskCard(
+                          task: taskListModel.taskList![index],
+                          onStatusChange: () {
+                            getNewTaskList();
+                          },
+                          showProgress: (inProgress) {
+                            getNewTaskInProgress = inProgress;
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

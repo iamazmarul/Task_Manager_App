@@ -53,17 +53,29 @@ class _TaskCanceledScreenState extends State<TaskCanceledScreen> {
               child: Visibility(
                 visible: getCancelledTaskInProgress == false,
                 replacement: const Center(child: CircularProgressIndicator()),
-                child: ListView.builder(
-                  itemCount: taskListModel.taskList?.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ItemTaskCard(
-                        task: taskListModel.taskList![index],
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    getCancelledTaskList();
                   },
+                  child: ListView.builder(
+                    itemCount: taskListModel.taskList?.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ItemTaskCard(
+                          task: taskListModel.taskList![index],
+                          onStatusChange: (){getCancelledTaskList();},
+                          showProgress: (inProgress){
+                            getCancelledTaskInProgress = inProgress;
+                            if(mounted){
+                              setState(() {});
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
