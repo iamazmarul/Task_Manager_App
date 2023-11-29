@@ -10,5 +10,6 @@ class Urls {
   static const String getCancelledTask = "$_baseUrl/listTaskByStatus/Cancelled";
   static String getUpdateTaskStatus(String taskId, String status) =>
       "$_baseUrl/updateTaskStatus/$taskId/$status";
-  static String getDeleteTask(String taskId) => "$_baseUrl/deleteTask/$taskId/";
+  static String getDeleteTask(String taskId) => "$_baseUrl/deleteTask/$taskId";
+  static String getRecoveryEmail(String emailId) => "$_baseUrl/RecoverVerifyEmail/$emailId";
 }

@@ -18,9 +18,9 @@ class TaskCountSummaryStatusModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = this.status;
-    if (this.taskCountList != null) {
-      data['data'] = this.taskCountList!.map((v) => v.toJson()).toList();
+    data['status'] = status;
+    if (taskCountList != null) {
+      data['data'] = taskCountList!.map((v) => v.toJson()).toList();
     }
     return data;
   }

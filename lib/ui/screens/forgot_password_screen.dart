@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
+
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -10,6 +10,11 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+
+  final TextEditingController _emailTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _forgotPasswordEmailInProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +23,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Form(
+              key: _formKey,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +33,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     Text(
                       "Your Email Address",
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .titleLarge,
                     ),
                     const Text(
                       "A 6 digit verification pin will send to your \n email address",
@@ -40,24 +49,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       height: 24,
                     ),
                     TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(hintText: "Email"),
-                    ),
+                        controller: _emailTEController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(hintText: "Email"),
+                        validator: (String? value) {
+                          if (value
+                              ?.trim()
+                              .isEmpty ?? true) {
+                            return "Enter your Valid email";
+                          }
+                          return null;
+                        }),
                     const SizedBox(
                       height: 16.0,
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PinVerificationScreen(),
-                            ),
-                          );
-                        },
-                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      child: Visibility(
+                        visible: _forgotPasswordEmailInProgress == false,
+                        replacement: const Center(
+                            child: CircularProgressIndicator()),
+                        child: ElevatedButton(
+                          onPressed: () {
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined),
+                        ),
                       ),
                     ),
                     const SizedBox(

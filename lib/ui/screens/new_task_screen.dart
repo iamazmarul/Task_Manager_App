@@ -107,7 +107,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 visible: getNewTaskInProgress == false,
                 replacement: const Center(child: CircularProgressIndicator()),
                 child: RefreshIndicator(
-                  onRefresh: ()async {
+                  onRefresh: () async {
                     getNewTaskList();
                   },
                   child: ListView.builder(
@@ -120,6 +120,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                           task: taskListModel.taskList![index],
                           onStatusChange: () {
                             getNewTaskList();
+                            getTaskCountSummaryList();
                           },
                           showProgress: (inProgress) {
                             getNewTaskInProgress = inProgress;

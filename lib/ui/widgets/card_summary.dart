@@ -9,13 +9,11 @@ class CardSummary extends StatefulWidget {
 
   final String count, title;
 
-
   @override
   State<CardSummary> createState() => _CardSummaryState();
 }
 
 class _CardSummaryState extends State<CardSummary> {
-
   @override
   Widget build(BuildContext context) {
     return Card(
