@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/network_caller/network_caller.dart';
 import 'package:task_manager/data/network_caller/network_response.dart';
 import 'package:task_manager/data/utility/urls.dart';
-import 'package:task_manager/ui/screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/widgets/profile_summary_card.dart';
 import 'package:task_manager/ui/widgets/show_snack_message.dart';
@@ -20,18 +19,13 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _createTaskinprogress = false;
+  bool addNewTaskSuccess = false;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Handle back button press
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const MainBottomNavbarScreen()),
-              (route) => false,
-        );
-        // Return false to prevent the default behavior
+        Navigator.pop(context, addNewTaskSuccess);
         return false;
       },
       child: Scaffold(
@@ -132,6 +126,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         setState(() {});
       }
       if(response.isSuccess){
+        addNewTaskSuccess = true;
         _subjectTEController.clear();
         _descriptionTEController.clear();
         if(mounted){

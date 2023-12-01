@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/data/network_caller/network_response.dart';
+import 'package:task_manager/data/utility/urls.dart';
+import 'package:task_manager/ui/controllers/authentication_controller.dart';
+import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
-
+import 'package:task_manager/ui/widgets/show_snack_message.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -10,7 +15,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _forgotPasswordEmailInProgress = false;
@@ -33,10 +37,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     Text(
                       "Your Email Address",
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const Text(
                       "A 6 digit verification pin will send to your \n email address",
@@ -53,9 +54,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(hintText: "Email"),
                         validator: (String? value) {
-                          if (value
-                              ?.trim()
-                              .isEmpty ?? true) {
+                          if (value?.trim().isEmpty ?? true) {
                             return "Enter your Valid email";
                           }
                           return null;
@@ -67,10 +66,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       width: double.infinity,
                       child: Visibility(
                         visible: _forgotPasswordEmailInProgress == false,
-                        replacement: const Center(
-                            child: CircularProgressIndicator()),
+                        replacement:
+                            const Center(child: CircularProgressIndicator()),
                         child: ElevatedButton(
                           onPressed: () {
+                            _sendForgotPasswordRequest();
                           },
                           child: const Icon(Icons.arrow_circle_right_outlined),
                         ),
@@ -111,5 +111,50 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _sendForgotPasswordRequest() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _forgotPasswordEmailInProgress = true;
+      });
+      NetworkResponse response = await NetworkCaller()
+          .getRequest(Urls.getRecoveryEmail(_emailTEController.text.trim()));
+
+      setState(() {
+        _forgotPasswordEmailInProgress = false;
+      });
+
+      if (response.isSuccess) {
+        await AuthenticationController.saveForgotPasswordEmail(_emailTEController.text.trim());
+        _clearTextFields();
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PinVerificationScreen(),
+            ),
+          );
+        }
+        if (mounted) {
+          showSnackMessage(
+              context, "6 Digit OTP Sent to your Registered Email");
+        }
+      } else {
+        if (mounted) {
+          showSnackMessage(context,
+              "Forgot password failed. Please enter your Registered Email ");
+        }
+      }
+    }
+  }
+  void _clearTextFields() {
+    _emailTEController.clear();
+  }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    super.dispose();
   }
 }

@@ -14,10 +14,30 @@ class AuthenticationController {
     user = model;
   }
 
+  static Future<void> saveForgotPasswordEmail(String email) async{
+    final sharedpreferences = await SharedPreferences.getInstance();
+    await sharedpreferences.setString("ForgotPasswordEmail", email);
+  }
+
+  static Future<void> saveForgotPasswordOTP(String otp) async{
+    final sharedpreferences = await SharedPreferences.getInstance();
+    await sharedpreferences.setString("ForgotPasswordOTP", otp);
+  }
+
   static Future<void> initilizedUserCache() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     token = sharedPreferences.getString("token");
     user = UserModel.fromJson(jsonDecode(sharedPreferences.getString("user") ?? "{}"));
+  }
+
+  static Future<String> callEmail() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString("ForgotPasswordEmail") ?? "";
+  }
+
+  static Future<String> callOTP() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString("ForgotPasswordOTP") ?? "";
   }
 
   static Future<bool> checkAuthState() async {
