@@ -134,32 +134,41 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       ),
     );
   }
+
   Future<void> setNewPassword() async {
     if (_formKey.currentState!.validate()) {
+      if (_newPasswordTEController.text != _newConPasswordTEController.text) {
+        showSnackMessage(context, "Passwords do not match", true);
+        return;
+      }
+
       _setNewPasswordVerificationInProgress = true;
       if (mounted) {
         setState(() {});
       }
+
       final saveEmail = await AuthenticationController.callEmail();
       final saveOtp = await AuthenticationController.callOTP();
 
       final NetworkResponse response =
       await NetworkCaller().postRequest(Urls.setNewPassword, body: {
-        "email":saveEmail,
-        "OTP":saveOtp,
-        "password":_newPasswordTEController.text,
-
+        "email": saveEmail,
+        "OTP": saveOtp,
+        "password": _newPasswordTEController.text, 
       });
+
       _setNewPasswordVerificationInProgress = false;
       if (mounted) {
         setState(() {});
       }
+
       if (response.isSuccess) {
         _clearTextFields();
-        if(mounted) {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
-        }
         if (mounted) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false);
           showSnackMessage(context, "Forgot Password Successfully ");
         }
       } else {
@@ -170,6 +179,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       }
     }
   }
+
+
 
   void _clearTextFields() {
     _newPasswordTEController.clear();
