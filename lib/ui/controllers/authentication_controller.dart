@@ -14,6 +14,12 @@ class AuthenticationController {
     user = model;
   }
 
+  static Future<void> updateUserInfo(UserModel model) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString("user", jsonEncode(model.toJson()));
+    user = model;
+  }
+
   static Future<void> saveForgotPasswordEmail(String email) async{
     final sharedpreferences = await SharedPreferences.getInstance();
     await sharedpreferences.setString("ForgotPasswordEmail", email);
