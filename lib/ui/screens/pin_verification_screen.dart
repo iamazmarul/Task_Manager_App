@@ -8,7 +8,6 @@ import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
 
-
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({super.key});
 
