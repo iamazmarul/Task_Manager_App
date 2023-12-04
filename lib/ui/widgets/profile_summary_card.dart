@@ -20,8 +20,12 @@ class ProfileSummaryCard extends StatefulWidget {
 class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
   @override
   Widget build(BuildContext context) {
-    Uint8List imageBytes = const Base64Decoder()
-        .convert(AuthenticationController.user?.photo ?? '');
+    Uint8List imageBytes;
+    try {
+      imageBytes = const Base64Decoder().convert(AuthenticationController.user?.photo ?? '');
+    } catch (e) {
+      imageBytes = Uint8List(0);
+    }
 
     return ListTile(
       onTap: () {
