@@ -22,7 +22,8 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
   Widget build(BuildContext context) {
     Uint8List imageBytes;
     try {
-      imageBytes = const Base64Decoder().convert(AuthenticationController.user?.photo ?? '');
+      imageBytes = const Base64Decoder()
+          .convert(AuthenticationController.user?.photo ?? '');
     } catch (e) {
       imageBytes = Uint8List(0);
     }
