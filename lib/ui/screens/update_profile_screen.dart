@@ -181,7 +181,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
       if (photo != null) {
         List<int> imageBytes = await photo!.readAsBytes();
-        String photoInBase64 = base64Encode(imageBytes);
+         photoInBase64 = base64Encode(imageBytes);
         inputData["photo"] = photoInBase64;
       }
 
@@ -243,25 +243,23 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           ),
           Expanded(
             flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: InkWell(
-                onTap: () async {
-                  final XFile? image = await ImagePicker()
-                      .pickImage(source: ImageSource.camera, imageQuality: 50);
-                  if (image != null) {
-                    photo = image;
-                    if (mounted) {
-                      setState(() {});
-                    }
+            child: InkWell(
+              onTap: () async {
+                final XFile? image = await ImagePicker()
+                    .pickImage(source: ImageSource.camera, imageQuality: 50);
+                if (image != null) {
+                  photo = image;
+                  if (mounted) {
+                    setState(() {});
                   }
-                },
-                child: Container(
-                  child: Visibility(
-                      visible: photo == null,
-                      replacement: Text(photo?.name ?? ""),
-                      child: const Text("Select a photo")),
-                ),
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.only(left: 16),
+                child: Visibility(
+                    visible: photo == null,
+                    replacement: Text(photo?.name ?? ""),
+                    child: const Text("Select a photo")),
               ),
             ),
           ),
