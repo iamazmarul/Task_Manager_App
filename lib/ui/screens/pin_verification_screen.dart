@@ -7,6 +7,7 @@ import 'package:task_manager/ui/controllers/authentication_controller.dart';
 import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
+import 'package:task_manager/ui/widgets/show_snack_message.dart';
 
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({super.key});
@@ -149,18 +150,21 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       setState(() {
         _pinVerificationInProgress = false;
       });
-      if (response.isSuccess) {
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SetPasswordScreen(),
-            ),
-          );
-        }
+      if (response.jsonResponse["status"] == "success") {
         await AuthenticationController.saveForgotPasswordOTP(
             _otpTEController.text);
         _clearTextFields();
+        if (mounted) {
+          showSnackMessage(context, "Success");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const SetPasswordScreen()));
+        }
+      } else {
+        if (mounted) {
+          showSnackMessage(context, "Incorrect OTP");
+        }
       }
     }
   }

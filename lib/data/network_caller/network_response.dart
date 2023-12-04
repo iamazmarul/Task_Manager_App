@@ -5,6 +5,7 @@ class NetworkResponse {
   final String? errorMessage;
 
 
+
   NetworkResponse(
       {this.statusCode = -1,
         required this.isSuccess,

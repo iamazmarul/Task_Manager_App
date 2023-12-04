@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/controllers/authentication_controller.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
@@ -17,6 +20,14 @@ class ProfileSummaryCard extends StatefulWidget {
 class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
   @override
   Widget build(BuildContext context) {
+    Uint8List imageBytes;
+    try {
+      imageBytes = const Base64Decoder().convert(AuthenticationController.user?.photo ?? '');
+    } catch (e) {
+      imageBytes = Uint8List(0);
+    }
+
+
     return ListTile(
       onTap: () {
         if (widget.enableOnTab) {
@@ -26,8 +37,16 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
                   builder: (context) => const UpdateProfileScreen()));
         }
       },
-      leading: const CircleAvatar(
-        child: Icon(Icons.person),
+      leading: CircleAvatar(
+        child: AuthenticationController.user?.photo == null
+            ? const Icon(Icons.person)
+            : ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Image.memory(
+            imageBytes,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
       title: Text(
         FullName,
@@ -59,7 +78,7 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
     );
   }
 
-  String get FullName{
+  String get FullName {
     return '${AuthenticationController.user?.firstName ?? ""} ${AuthenticationController.user?.lastName ?? ""}';
   }
 }
