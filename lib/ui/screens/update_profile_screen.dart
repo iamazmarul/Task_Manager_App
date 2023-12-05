@@ -67,7 +67,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         const SizedBox(
                           height: 8,
                         ),
-                        PhotoPicker(),
+                        photoPicker(),
                         const SizedBox(
                           height: 8,
                         ),
@@ -212,7 +212,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-  Container PhotoPicker() {
+  Container photoPicker() {
     return Container(
       height: 50,
       decoration: BoxDecoration(

@@ -62,16 +62,16 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
       leading: CircleAvatar(
         child: imageBytes != null
             ? ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Image.memory(
-            imageBytes!,
-            fit: BoxFit.cover,
-          ),
-        )
+                borderRadius: BorderRadius.circular(30),
+                child: Image.memory(
+                  imageBytes!,
+                  fit: BoxFit.cover,
+                ),
+              )
             : const Icon(Icons.person),
       ),
       title: Text(
-        FullName,
+        fullName,
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w700,
@@ -91,7 +91,7 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false,
+              (route) => false,
             );
           }
         },
@@ -101,7 +101,7 @@ class _ProfileSummaryCardState extends State<ProfileSummaryCard> {
     );
   }
 
-  String get FullName {
+  String get fullName {
     return '${AuthenticationController.user?.firstName ?? ""} ${AuthenticationController.user?.lastName ?? ""}';
   }
 }
