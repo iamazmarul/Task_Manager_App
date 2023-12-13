@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/data/network_caller/network_response.dart';
-import 'package:task_manager/data/utility/urls.dart';
-import 'package:task_manager/ui/controllers/authentication_controller.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/set_password_controller.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/widgets/show_snack_message.dart';
@@ -15,11 +13,13 @@ class SetPasswordScreen extends StatefulWidget {
 }
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
-
-  final TextEditingController _newPasswordTEController = TextEditingController();
-  final TextEditingController _newConPasswordTEController = TextEditingController();
+  final TextEditingController _newPasswordTEController =
+      TextEditingController();
+  final TextEditingController _newConPasswordTEController =
+      TextEditingController();
+  final SetNewPasswordController _setNewPasswordController =
+      Get.find<SetNewPasswordController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _setNewPasswordVerificationInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,47 +52,52 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                       height: 24,
                     ),
                     TextFormField(
-                      controller: _newPasswordTEController,
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: "Password"),
+                        controller: _newPasswordTEController,
+                        obscureText: true,
+                        decoration: const InputDecoration(hintText: "Password"),
                         validator: (String? value) {
                           if (value?.trim().isEmpty ?? true) {
                             return "Enter your Valid Password";
                           }
                           return null;
-                        }
-                    ),
+                        }),
                     const SizedBox(
                       height: 8,
                     ),
                     TextFormField(
-                      controller: _newConPasswordTEController,
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: "Confirm Password"),
+                        controller: _newConPasswordTEController,
+                        obscureText: true,
+                        decoration:
+                            const InputDecoration(hintText: "Confirm Password"),
                         validator: (String? value) {
                           if (value?.trim().isEmpty ?? true) {
                             return "Enter your Valid Confirm Password";
                           }
                           return null;
-                        }
-                    ),
+                        }),
                     const SizedBox(
                       height: 16.0,
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: Visibility(
-                        visible: _setNewPasswordVerificationInProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setNewPassword();
-                          },
-                          child: const Icon(Icons.arrow_circle_right_outlined),
-                        ),
-                      ),
+                      child: GetBuilder<SetNewPasswordController>(
+                          builder: (SetNewPasswordController) {
+                        return Visibility(
+                          visible: SetNewPasswordController
+                                  .setNewPasswordVerificationInProgress ==
+                              false,
+                          replacement: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setNewPassword();
+                            },
+                            child:
+                                const Icon(Icons.arrow_circle_right_outlined),
+                          ),
+                        );
+                      }),
                     ),
                     const SizedBox(
                       height: 48.0,
@@ -109,11 +114,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                    (route) => false
-                            );
+                            Get.offAll(const LoginScreen());
                           },
                           child: const Text(
                             "Sign In",
@@ -141,46 +142,23 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
         showSnackMessage(context, "Passwords do not match", true);
         return;
       }
+      final response = await _setNewPasswordController
+          .setNewPassword(_newConPasswordTEController.text);
 
-      _setNewPasswordVerificationInProgress = true;
-      if (mounted) {
-        setState(() {});
-      }
-
-      final saveEmail = await AuthenticationController.callEmail();
-      final saveOtp = await AuthenticationController.callOTP();
-
-      final NetworkResponse response =
-      await NetworkCaller().postRequest(Urls.setNewPassword, body: {
-        "email": saveEmail,
-        "OTP": saveOtp,
-        "password": _newPasswordTEController.text, 
-      });
-
-      _setNewPasswordVerificationInProgress = false;
-      if (mounted) {
-        setState(() {});
-      }
-
-      if (response.isSuccess) {
+      if (response) {
         _clearTextFields();
+        Get.offAll(const LoginScreen());
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false);
-          showSnackMessage(context, "Forgot Password Successfully ");
+          showSnackMessage(context, _setNewPasswordController.snackMessage);
         }
       } else {
         if (mounted) {
           showSnackMessage(
-              context, "Forgot Password Failed! Please try again", true);
+              context, _setNewPasswordController.snackMessage, true);
         }
       }
     }
   }
-
-
 
   void _clearTextFields() {
     _newPasswordTEController.clear();

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/forgot_password_controller.dart';
+import 'package:task_manager/ui/controllers/login_controller.dart';
+import 'package:task_manager/ui/controllers/pin_verification_controller.dart';
+import 'package:task_manager/ui/controllers/set_password_controller.dart';
+import 'package:task_manager/ui/controllers/sign_up_controller.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskManager extends StatelessWidget {
@@ -8,7 +14,7 @@ class TaskManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: navigationKey,
       title: "Task Manager",
       debugShowCheckedModeBanner: false,
@@ -36,6 +42,18 @@ class TaskManager extends StatelessWidget {
           ),
         ),
       ),
+      initialBinding: ControllerBinder(),
     );
+  }
+}
+
+class ControllerBinder extends Bindings{
+  @override
+  void dependencies() {
+    Get.put(LoginController());
+    Get.put(SignUpController());
+    Get.put(ForgotPasswordController());
+    Get.put(SetNewPasswordController());
+    Get.put(PinVerificationController());
   }
 }

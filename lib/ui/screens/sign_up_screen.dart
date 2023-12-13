@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/data/network_caller/network_response.dart';
-import 'package:task_manager/data/utility/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/sign_up_controller.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/widgets/show_snack_message.dart';
 
@@ -19,8 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _signUpInProgress = false;
+  final SignUpController _signUpController = Get.find<SignUpController>();
 
   @override
   Widget build(BuildContext context) {
@@ -115,15 +113,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: Visibility(
-                        visible: _signUpInProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: signUp,
-                          child: const Icon(Icons.arrow_circle_right_outlined),
-                        ),
+                      child: GetBuilder<SignUpController>(
+                        builder: (SignUpController) {
+                          return Visibility(
+                            visible: SignUpController.signUpInProgress == false,
+                            replacement: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            child: ElevatedButton(
+                              onPressed: signUp,
+                              child: const Icon(Icons.arrow_circle_right_outlined),
+                            ),
+                          );
+                        }
                       ),
                     ),
                     const SizedBox(
@@ -141,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                           Get.back();
                           },
                           child: const Text(
                             "Sign in",
@@ -165,31 +167,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> signUp() async {
     if (_formKey.currentState!.validate()) {
-      _signUpInProgress = true;
-      if (mounted) {
-        setState(() {});
-      }
-      final NetworkResponse response =
-          await NetworkCaller().postRequest(Urls.registration, body: {
-        "email": _emailTEController.text.trim(),
-        "firstName": _firstnameTEController.text.trim(),
-        "lastName": _lastnameTEController.text.trim(),
-        "mobile": _mobileTEController.text.trim(),
-        "password": _passwordTEController.text,
-      });
-      _signUpInProgress = false;
-      if (mounted) {
-        setState(() {});
-      }
-      if (response.isSuccess) {
+final response = await _signUpController.signUp(
+    _emailTEController.text.trim(),
+    _firstnameTEController.text.trim(),
+    _lastnameTEController.text.trim(),
+    _mobileTEController.text.trim(),
+    _passwordTEController.text);
+      if (response) {
         _clearTextFields();
         if (mounted) {
-          showSnackMessage(context, "Account has been Created! Please Log Inn");
+          showSnackMessage(context, _signUpController.failedMessage);
         }
       } else {
         if (mounted) {
           showSnackMessage(
-              context, "Account Creation Failed! Please try again", true);
+              context, _signUpController.failedMessage, true);
         }
       }
     }

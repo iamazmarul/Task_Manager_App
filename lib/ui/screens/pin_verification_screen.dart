@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/data/network_caller/network_response.dart';
-import 'package:task_manager/data/utility/urls.dart';
-import 'package:task_manager/ui/controllers/authentication_controller.dart';
+import 'package:task_manager/ui/controllers/pin_verification_controller.dart';
 import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/screens/login_screen.dart';
@@ -19,7 +17,6 @@ class PinVerificationScreen extends StatefulWidget {
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _pinVerificationInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,51 +48,81 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     const SizedBox(
                       height: 24,
                     ),
-                    PinCodeTextField(
-                        controller: _otpTEController,
-                        length: 6,
-                        obscureText: false,
-                        animationType: AnimationType.fade,
-                        pinTheme: PinTheme(
-                          shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(5),
-                          fieldHeight: 50,
-                          fieldWidth: 40,
-                          activeFillColor: Colors.white,
-                          activeColor: Colors.green,
-                          selectedFillColor: Colors.white,
-                          inactiveFillColor: Colors.white,
-                        ),
-                        animationDuration: const Duration(milliseconds: 300),
-                        enableActiveFill: true,
-                        onCompleted: (v) {},
-                        onChanged: (value) {},
-                        beforeTextPaste: (text) {
-                          return true;
-                        },
-                        appContext: context,
-                        validator: (String? value) {
-                          if (value?.trim().isEmpty ?? true) {
-                            return "Enter your Valid OTP";
-                          }
-                          return null;
-                        }),
+                    GetBuilder<PinVerificationController>(
+                      builder: (PinVerificationController) {
+                        return PinCodeTextField(
+                            controller: _otpTEController,
+                            length: 6,
+                            obscureText: false,
+                            animationType: AnimationType.fade,
+                            pinTheme: PinTheme(
+                              shape: PinCodeFieldShape.box,
+                              borderRadius: BorderRadius.circular(5),
+                              fieldHeight: 50,
+                              fieldWidth: 40,
+                              activeFillColor: Colors.white,
+                              activeColor: Colors.green,
+                              selectedFillColor: Colors.white,
+                              inactiveFillColor: Colors.white,
+                            ),
+                            animationDuration: const Duration(milliseconds: 300),
+                            enableActiveFill: true,
+                            onCompleted: (value) {PinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
+                                .then((value) {
+                              if (value) {
+                                if (mounted) {
+                                  showSnackMessage(context, "Success OTP Verified");
+                                }
+                                Get.to(const SetPasswordScreen());
+                              } else {
+                                if (mounted) {
+                                  showSnackMessage(context, "Failed Wrong OTP");
+                                }
+                              }
+                            });},
+                            onChanged: (value) {},
+                            beforeTextPaste: (text) {
+                              return true;
+                            },
+                            appContext: context,
+                            );
+                      }
+                    ),
                     const SizedBox(
                       height: 16.0,
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: Visibility(
-                        visible: _pinVerificationInProgress == false,
-                        replacement:
-                            const Center(child: CircularProgressIndicator()),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _sendForgotPasswordRequest();
-                          },
-                          child: const Icon(Icons.arrow_circle_right_outlined),
-                        ),
-                      ),
+                      child: GetBuilder<PinVerificationController>(
+                          builder: (PinVerificationController) {
+                        return Visibility(
+                          visible: PinVerificationController
+                                  .pinVerificationInProgress ==
+                              false,
+                          replacement:
+                              const Center(child: CircularProgressIndicator()),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              PinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
+                                  .then((value) {
+                                if (value) {
+                                  if (mounted) {
+                                    showSnackMessage(context, "Success OTP Verified");
+                                  }
+                                  _clearTextFields();
+                                  Get.to(const SetPasswordScreen());
+                                } else {
+                                  if (mounted) {
+                                    showSnackMessage(context, "Failed Wrong OTP");
+                                  }
+                                }
+                              });
+                            },
+                            child:
+                                const Icon(Icons.arrow_circle_right_outlined),
+                          ),
+                        );
+                      }),
                     ),
                     const SizedBox(
                       height: 32.0,
@@ -112,11 +139,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()),
-                                (route) => false);
+                            Get.offAll(const LoginScreen());
                           },
                           child: const Text(
                             "Sign In",
@@ -138,36 +161,6 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     );
   }
 
-  Future<void> _sendForgotPasswordRequest() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _pinVerificationInProgress = true;
-      });
-      final saveEmail = await AuthenticationController.callEmail();
-
-      NetworkResponse response = await NetworkCaller()
-          .getRequest(Urls.getOTP(saveEmail, _otpTEController.text));
-      setState(() {
-        _pinVerificationInProgress = false;
-      });
-      if (response.jsonResponse["status"] == "success") {
-        await AuthenticationController.saveForgotPasswordOTP(
-            _otpTEController.text);
-        _clearTextFields();
-        if (mounted) {
-          showSnackMessage(context, "Success");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const SetPasswordScreen()));
-        }
-      } else {
-        if (mounted) {
-          showSnackMessage(context, "Incorrect OTP");
-        }
-      }
-    }
-  }
 
   void _clearTextFields() {
     _otpTEController.clear();
