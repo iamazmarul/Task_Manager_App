@@ -72,9 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: GetBuilder<LoginController>(
-                          builder: (LoginController) {
+                          builder: (loginController) {
                         return Visibility(
-                          visible: LoginController.loginInProgress == false,
+                          visible: loginController.loginInProgress == false,
                           replacement: const Center(
                             child: CircularProgressIndicator(),
                           ),

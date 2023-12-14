@@ -49,7 +49,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       height: 24,
                     ),
                     GetBuilder<PinVerificationController>(
-                      builder: (PinVerificationController) {
+                      builder: (pinVerificationController) {
                         return PinCodeTextField(
                             controller: _otpTEController,
                             length: 6,
@@ -67,7 +67,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                             ),
                             animationDuration: const Duration(milliseconds: 300),
                             enableActiveFill: true,
-                            onCompleted: (value) {PinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
+                            onCompleted: (value) {pinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
                                 .then((value) {
                               if (value) {
                                 if (mounted) {
@@ -94,16 +94,16 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: GetBuilder<PinVerificationController>(
-                          builder: (PinVerificationController) {
+                          builder: (pinVerificationController) {
                         return Visibility(
-                          visible: PinVerificationController
+                          visible: pinVerificationController
                                   .pinVerificationInProgress ==
                               false,
                           replacement:
                               const Center(child: CircularProgressIndicator()),
                           child: ElevatedButton(
                             onPressed: () {
-                              PinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
+                              pinVerificationController.sendForgotPasswordRequest(_otpTEController.text)
                                   .then((value) {
                                 if (value) {
                                   if (mounted) {

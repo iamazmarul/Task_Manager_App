@@ -114,9 +114,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: GetBuilder<SignUpController>(
-                        builder: (SignUpController) {
+                        builder: (signUpController) {
                           return Visibility(
-                            visible: SignUpController.signUpInProgress == false,
+                            visible: signUpController.signUpInProgress == false,
                             replacement: const Center(
                               child: CircularProgressIndicator(),
                             ),

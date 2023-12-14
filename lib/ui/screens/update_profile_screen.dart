@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/data/network_caller/network_response.dart';
-import 'package:task_manager/data/utility/urls.dart';
 import 'package:task_manager/ui/controllers/authentication_controller.dart';
+import 'package:task_manager/ui/controllers/update_profile_controller.dart';
 import 'package:task_manager/ui/widgets/body_background.dart';
 import 'package:task_manager/ui/widgets/profile_summary_card.dart';
 import 'package:task_manager/ui/widgets/show_snack_message.dart';
@@ -24,18 +20,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _lastNameTeController = TextEditingController();
   final TextEditingController _mobileTeController = TextEditingController();
   final TextEditingController _passwordTeController = TextEditingController();
+  final UpdateProfileController _updateProfileController =
+      Get.find<UpdateProfileController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _updateProfileScreenInProgress = false;
-  XFile? photo;
 
   @override
   void initState() {
     super.initState();
-    _emailTeController.text = AuthenticationController.user?.email ?? "";
+    _emailTeController.text =
+        Get.find<AuthenticationController>().user?.email ?? "";
     _firstNameTeController.text =
-        AuthenticationController.user?.firstName ?? "";
-    _lastNameTeController.text = AuthenticationController.user?.lastName ?? "";
-    _mobileTeController.text = AuthenticationController.user?.mobile ?? "";
+        Get.find<AuthenticationController>().user?.firstName ?? "";
+    _lastNameTeController.text =
+        Get.find<AuthenticationController>().user?.lastName ?? "";
+    _mobileTeController.text =
+        Get.find<AuthenticationController>().user?.mobile ?? "";
   }
 
   @override
@@ -136,18 +135,23 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                         SizedBox(
                           width: double.infinity,
-                          child: Visibility(
-                            visible: _updateProfileScreenInProgress == false,
-                            replacement: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                updateProfile();
-                              },
-                              child: const Text("Update"),
-                            ),
-                          ),
+                          child: GetBuilder<UpdateProfileController>(
+                              builder: (updateProfileController) {
+                            return Visibility(
+                              visible: _updateProfileController
+                                      .updateProfileScreenInProgress ==
+                                  false,
+                              replacement: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  updateProfile();
+                                },
+                                child: const Text("Update"),
+                              ),
+                            );
+                          }),
                         ),
                       ],
                     ),
@@ -163,44 +167,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   Future<void> updateProfile() async {
     if (_formKey.currentState!.validate()) {
-      _updateProfileScreenInProgress = true;
-      if (mounted) {
-        setState(() {});
-      }
-      String? photoInBase64;
-      Map<String, dynamic> inputData = {
-        "email": _emailTeController.text.trim(),
-        "firstName": _firstNameTeController.text.trim(),
-        "lastName": _lastNameTeController.text.trim(),
-        "mobile": _mobileTeController.text.trim(),
-      };
+      final response = await UpdateProfileController().updateProfile(
+        _emailTeController.text.trim(),
+        _firstNameTeController.text.trim(),
+        _lastNameTeController.text.trim(),
+        _mobileTeController.text.trim(),
+        _passwordTeController.text,
+      );
 
-      if (_passwordTeController.text.isNotEmpty) {
-        inputData["password"] = _passwordTeController.text;
-      }
-
-      if (photo != null) {
-        List<int> imageBytes = await photo!.readAsBytes();
-         photoInBase64 = base64Encode(imageBytes);
-        inputData["photo"] = photoInBase64;
-      }
-
-      final NetworkResponse response = await NetworkCaller()
-          .postRequest(Urls.updateProfile, body: inputData);
-      _updateProfileScreenInProgress = false;
-      if (mounted) {
-        setState(() {});
-      }
-      if (response.isSuccess) {
-        AuthenticationController.updateUserInfo(
-          UserModel(
-            email: _emailTeController.text.trim(),
-            firstName: _firstNameTeController.text.trim(),
-            lastName: _lastNameTeController.text.trim(),
-            mobile: _mobileTeController.text.trim(),
-              photo: photoInBase64 ?? AuthenticationController.user?.photo
-          ),
-        );
+      if (response) {
         if (mounted) {
           showSnackMessage(context, "Profile Update Success");
         }
@@ -248,7 +223,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 final XFile? image = await ImagePicker()
                     .pickImage(source: ImageSource.camera, imageQuality: 50);
                 if (image != null) {
-                  photo = image;
+                  _updateProfileController.photo = image;
                   if (mounted) {
                     setState(() {});
                   }
@@ -257,8 +232,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               child: Container(
                 padding: const EdgeInsets.only(left: 16),
                 child: Visibility(
-                    visible: photo == null,
-                    replacement: Text(photo?.name ?? ""),
+                    visible: _updateProfileController.photo == null,
+                    replacement:
+                        Text(_updateProfileController.photo?.name ?? ""),
                     child: const Text("Select a photo")),
               ),
             ),

@@ -65,9 +65,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: GetBuilder<ForgotPasswordController>(
-                          builder: (ForgotPasswordController) {
+                          builder: (forgotPasswordController) {
                         return Visibility(
-                          visible: ForgotPasswordController
+                          visible: forgotPasswordController
                                   .forgotPasswordEmailInProgress ==
                               false,
                           replacement:
@@ -124,7 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       final response = await _forgotPasswordController
           .sendForgotPasswordRequest(_emailTEController.text.trim());
       if (response) {
-        await AuthenticationController.saveForgotPasswordEmail(
+        await Get.find<AuthenticationController>().saveForgotPasswordEmail(
             _emailTEController.text.trim());
         _clearTextFields();
         Get.off(const PinVerificationScreen());

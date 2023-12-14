@@ -20,7 +20,7 @@ class ForgotPasswordController extends GetxController {
     update();
 
     if (response.isSuccess) {
-      await AuthenticationController.saveForgotPasswordEmail(email);
+      await Get.find<AuthenticationController>().saveForgotPasswordEmail(email);
       _snackMessage = "6 Digit OTP Sent to your Registered Email";
       return true;
     } else {

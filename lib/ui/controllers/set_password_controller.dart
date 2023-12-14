@@ -16,8 +16,8 @@ class SetNewPasswordController extends GetxController {
     _setNewPasswordVerificationInProgress = true;
     update();
 
-    final saveEmail = await AuthenticationController.callEmail();
-    final saveOtp = await AuthenticationController.callOTP();
+    final saveEmail = await Get.find<AuthenticationController>().callEmail();
+    final saveOtp = await Get.find<AuthenticationController>().callOTP();
 
     final NetworkResponse response =
         await NetworkCaller().postRequest(Urls.setNewPassword, body: {

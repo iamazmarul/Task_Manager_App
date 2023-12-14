@@ -48,12 +48,12 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           children: [
             const ProfileSummaryCard(),
             GetBuilder<TaskSummaryCountController>(
-                builder: (TaskSummaryCountController) {
+                builder: (taskSummaryCountController) {
               return Visibility(
-                  visible: TaskSummaryCountController
+                  visible: taskSummaryCountController
                               .getTaskCountSummaryListProgress ==
                           false &&
-                      (TaskSummaryCountController.taskCountSummaryListModel
+                      (taskSummaryCountController.taskCountSummaryListModel
                               .taskCountList?.isNotEmpty ??
                           false),
                   replacement: const LinearProgressIndicator(),
@@ -61,13 +61,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     height: 100,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: TaskSummaryCountController
+                        itemCount: taskSummaryCountController
                                 .taskCountSummaryListModel
                                 .taskCountList
                                 ?.length ??
                             0,
                         itemBuilder: (context, index) {
-                          TaskCount taskCount = TaskSummaryCountController
+                          TaskCount taskCount = taskSummaryCountController
                               .taskCountSummaryListModel.taskCountList![index];
                           return FittedBox(
                             child: CardSummary(
@@ -80,26 +80,26 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             }),
             Expanded(
               child:
-                  GetBuilder<NewTaskController>(builder: (NewTaskController) {
+                  GetBuilder<NewTaskController>(builder: (newTaskController) {
                 return Visibility(
-                  visible: NewTaskController.getNewTaskInProgress == false,
+                  visible: newTaskController.getNewTaskInProgress == false,
                   replacement: const Center(child: CircularProgressIndicator()),
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      NewTaskController.getNewTaskList();
+                      newTaskController.getNewTaskList();
                     },
                     child: ListView.builder(
                       itemCount:
-                          NewTaskController.taskListModel.taskList?.length,
+                          newTaskController.taskListModel.taskList?.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
                           child: ItemTaskCard(
-                            task: NewTaskController
+                            task: newTaskController
                                 .taskListModel.taskList![index],
                             onStatusChange: () {
-                              NewTaskController.getNewTaskList();
+                              newTaskController.getNewTaskList();
                               _taskSummaryCountController
                                   .getTaskCountSummaryList();
                             },

@@ -13,14 +13,14 @@ class PinVerificationController extends GetxController {
   Future<bool> sendForgotPasswordRequest(String otp) async {
     _pinVerificationInProgress = true;
     update();
-    final saveEmail = await AuthenticationController.callEmail();
+    final saveEmail = await Get.find<AuthenticationController>().callEmail();
 
     NetworkResponse response =
         await NetworkCaller().getRequest(Urls.getOTP(saveEmail, otp));
     _pinVerificationInProgress = false;
     update();
     if (response.jsonResponse?["status"] == "success") {
-      await AuthenticationController.saveForgotPasswordOTP(otp);
+      await Get.find<AuthenticationController>().saveForgotPasswordOTP(otp);
       Get.to(const SetPasswordScreen());
       return true;
     } else {

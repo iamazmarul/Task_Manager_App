@@ -84,7 +84,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: GetBuilder<AddNewTaskController>(
-                                builder: (AddNewTaskController) {
+                                builder: (addNewTaskController) {
                               return Visibility(
                                 visible:
                                     _addNewTaskController.createTaskinprogress ==

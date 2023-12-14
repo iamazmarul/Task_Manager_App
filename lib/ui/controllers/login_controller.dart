@@ -25,7 +25,7 @@ class LoginController extends GetxController {
     update();
 
     if (response.isSuccess) {
-      await AuthenticationController.saveUserInfo(
+      await Get.find<AuthenticationController>().saveUserInfo(
           response.jsonResponse["token"],
           UserModel.fromJson(response.jsonResponse["data"]));
       return true;

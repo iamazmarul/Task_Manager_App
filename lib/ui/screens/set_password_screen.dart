@@ -81,9 +81,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: GetBuilder<SetNewPasswordController>(
-                          builder: (SetNewPasswordController) {
+                          builder: (setNewPasswordController) {
                         return Visibility(
-                          visible: SetNewPasswordController
+                          visible: setNewPasswordController
                                   .setNewPasswordVerificationInProgress ==
                               false,
                           replacement: const Center(
