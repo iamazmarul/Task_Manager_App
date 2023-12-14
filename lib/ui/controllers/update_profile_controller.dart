@@ -12,9 +12,8 @@ class UpdateProfileController extends GetxController {
   bool get updateProfileScreenInProgress => _updateProfileScreenInProgress;
   XFile? photo;
 
-
-  Future<bool> updateProfile(
-      String email, String firstname, String lastname, String mobile, String password) async {
+  Future<bool> updateProfile(String email, String firstname, String lastname,
+      String mobile, String password) async {
     _updateProfileScreenInProgress = true;
     update();
     String? photoInBase64;
@@ -49,8 +48,7 @@ class UpdateProfileController extends GetxController {
                 Get.find<AuthenticationController>().user?.photo),
       );
       return true;
-    } else {
-    }
+    } else {}
     return false;
   }
 }
