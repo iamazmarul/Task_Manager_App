@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/ui/controllers/forgot_password_controller.dart';
 import 'package:task_manager/ui/controllers/login_controller.dart';
+import 'package:task_manager/ui/controllers/new_task_controller.dart';
 import 'package:task_manager/ui/controllers/pin_verification_controller.dart';
 import 'package:task_manager/ui/controllers/set_password_controller.dart';
 import 'package:task_manager/ui/controllers/sign_up_controller.dart';
+import 'package:task_manager/ui/controllers/task_summary_count_controller.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
+
+import 'ui/controllers/add_new_task_controller.dart';
 
 class TaskManager extends StatelessWidget {
   const TaskManager({super.key});
@@ -55,5 +59,8 @@ class ControllerBinder extends Bindings{
     Get.put(ForgotPasswordController());
     Get.put(SetNewPasswordController());
     Get.put(PinVerificationController());
+    Get.put(NewTaskController());
+    Get.put(TaskSummaryCountController());
+    Get.put(AddNewTaskController());
   }
 }
