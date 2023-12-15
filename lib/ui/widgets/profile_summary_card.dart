@@ -14,26 +14,20 @@ class ProfileSummaryCard extends StatelessWidget {
 
   final bool enableOnTab;
 
-  // Uint8List? imageBytes;
-  //
-  // void loadImage(AuthenticationController authenticationController) {
-  //   try {
-  //     String? photoData = authenticationController.user?.photo;
-  //     if (photoData != null && photoData.isNotEmpty) {
-  //       imageBytes = const Base64Decoder().convert(photoData);
-  //     } else {
-  //       imageBytes = null;
-  //     }
-  //   } catch (e) {
-  //     imageBytes = null;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AuthenticationController>(
       builder: (authenticationController) {
-        Uint8List imageBytes = const Base64Decoder().convert(authenticationController.user?.photo ?? '');
+        Uint8List? imageBytes;
+        try {
+          String? photoData = authenticationController.user?.photo;
+          if (photoData != null && photoData.isNotEmpty) {
+            imageBytes = const Base64Decoder().convert(photoData);
+          }
+        } catch (e) {
+          imageBytes = null;
+        }
+
         return ListTile(
           onTap: () {
             if (enableOnTab) {
@@ -46,12 +40,12 @@ class ProfileSummaryCard extends StatelessWidget {
             }
           },
           leading: CircleAvatar(
-            child: authenticationController.user?.photo == null
+            child: Get.find<AuthenticationController>().user?.photo == null
                 ? const Icon(Icons.person)
                 : ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: Image.memory(
-                imageBytes,
+                imageBytes ?? Uint8List(0), // Use a default value if imageBytes is null
                 fit: BoxFit.cover,
               ),
             ),
@@ -73,17 +67,17 @@ class ProfileSummaryCard extends StatelessWidget {
           trailing: IconButton(
             onPressed: () async {
               await AuthenticationController.clearAuthData();
-                Get.offAll(const LoginScreen());
+              Get.offAll(const LoginScreen());
             },
             icon: const Icon(Icons.logout_outlined),
           ),
           tileColor: Colors.green,
         );
-      }
+      },
     );
   }
 
-  String fullName (AuthenticationController authenticationController){
+  String fullName(AuthenticationController authenticationController) {
     return '${authenticationController.user?.firstName ?? ""} ${authenticationController.user?.lastName ?? ""}';
   }
 }
