@@ -224,15 +224,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 padding: const EdgeInsets.only(left: 16),
                 child: Visibility(
                   visible: _updateProfileController.photo != null,
-                  replacement: Text(_updateProfileController.photo?.name ?? ""),
                   child: _updateProfileController.photo != null
                       ? Image.file(
                     File(_updateProfileController.photo!.path),
-                    height: 100,
+                    height: 40,
                     width: 40,
                     fit: BoxFit.cover,
                   )
-                      : const Text("Select a photo"),
+                      : const SizedBox.shrink(),
+                  replacement: const Text("Select a photo"),
                 ),
               ),
             ),
@@ -241,4 +241,5 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       ),
     );
   }
+
 }
